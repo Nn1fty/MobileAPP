@@ -1,20 +1,17 @@
 const express = require('express');
 const mysql = require('mysql2');
-const path = require('path');
 const app = express();
 const port = 3000;
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// MySQL connection
+// Create a MySQL connection
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '',
+  user: 'root', // Change this if necessary
+  password: '', // Add your password here
   database: 'mywebsite'
 });
 
+// Connect to the database
 connection.connect(err => {
   if (err) {
     console.error('Error connecting to the database: ' + err.stack);
@@ -23,9 +20,10 @@ connection.connect(err => {
   console.log('Connected to the database.');
 });
 
+// Set up middleware to parse incoming request bodies
 app.use(express.json());
 
-// Fetch all users
+// Sample route to fetch all users
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM users', (err, results) => {
     if (err) {
@@ -36,7 +34,7 @@ app.get('/users', (req, res) => {
   });
 });
 
-// Add new user
+// Sample route to add a new user
 app.post('/users', (req, res) => {
   const { name, email } = req.body;
   connection.query('INSERT INTO users (name, email) VALUES (?, ?)', [name, email], (err, result) => {
